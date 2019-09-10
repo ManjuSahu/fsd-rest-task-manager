@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.fsd</groupId>
-	<artifactId>fsd-rest-task-manager</artifactId>
+	<artifactId>task-manager</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>fsd-rest-task-manager</name>
+	<name>task-manager</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
@@ -37,6 +37,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.18</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>RELEASE</version>
 		</dependency>
 	</dependencies>
 
