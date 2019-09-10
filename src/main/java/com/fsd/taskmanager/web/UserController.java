@@ -19,7 +19,7 @@ public class UserController {
     private UserRepository taskRepository;
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllTasks() {
+    public ResponseEntity<List<User>> getUsers() {
         List<User> users = new ArrayList<>();
         taskRepository.findAll().forEach((item) -> {
             users.add(item);
