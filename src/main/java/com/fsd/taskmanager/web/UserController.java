@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -16,12 +17,12 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserRepository taskRepository;
+    private UserRepository userRepository;
 
     @GetMapping
     public ResponseEntity<List<User>> getUsers() {
         List<User> users = new ArrayList<>();
-        taskRepository.findAll().forEach((item) -> {
+        userRepository.findAll().forEach((item) -> {
             users.add(item);
             System.out.println("item: "+item);
         });
@@ -31,7 +32,23 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Void> createUser(@RequestBody User user) {
-        taskRepository.save(user);
+        userRepository.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PutMapping
+    public ResponseEntity<Void> updateUser(@RequestBody User user) {
+        userRepository.save(user);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteUser(@RequestParam Integer userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isPresent()) {
+            userRepository.delete(user.get());
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }
