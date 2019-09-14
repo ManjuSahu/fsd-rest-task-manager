@@ -8,3 +8,13 @@ CREATE TABLE task_manager.users (
     project_id INT,
     task_id INT
 );
+
+CREATE TABLE task_manager.projects (
+    project_id INT AUTO_INCREMENT PRIMARY KEY,
+    project VARCHAR(50) NOT NULL,
+    start_date date,
+    end_date date,
+    priority INT,
+    manager_id INT,
+    CONSTRAINT fk_manager_id FOREIGN KEY (manager_id) REFERENCES task_manager.users(user_id)
+);
