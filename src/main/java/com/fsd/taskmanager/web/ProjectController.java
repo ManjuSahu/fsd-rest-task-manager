@@ -2,11 +2,14 @@ package com.fsd.taskmanager.web;
 
 import com.fsd.taskmanager.data.Project;
 import com.fsd.taskmanager.data.User;
+import com.fsd.taskmanager.repository.ParentTaskRepository;
 import com.fsd.taskmanager.repository.ProjectRepository;
+import com.fsd.taskmanager.repository.TaskRepository;
 import com.fsd.taskmanager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -24,12 +27,18 @@ public class ProjectController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
+    private ParentTaskRepository parentTaskRepository;
+
     @GetMapping
     public ResponseEntity<List<Project>> getProjects() {
         List<Project> projects = new ArrayList<>();
         projectRepository.findAll().forEach((item) -> {
-            projects.add(item);
-            System.out.println("item: " + item);
+            if(!("Suspended".equals(item.getStatus())))
+                projects.add(item);
         });
         System.out.println(projects);
         return ResponseEntity.ok(projects);
@@ -37,13 +46,17 @@ public class ProjectController {
 
     @PostMapping
     public ResponseEntity<Void> createProject(@RequestBody Project project) {
-        Optional<User> managerOptional = userRepository.findById(project.getManagerId());
-        if (managerOptional.isPresent()) {
-            project.setManager(managerOptional.get());
-            projectRepository.save(project);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+        if(!StringUtils.isEmpty(project.getManagerId())) {
+            Optional<User> managerOptional = userRepository.findById(project.getManagerId());
+            if (managerOptional.isPresent()) {
+                project.setManager(managerOptional.get());
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        project.setStatus("Active");
+        projectRepository.save(project);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping
@@ -53,12 +66,14 @@ public class ProjectController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteProject(@RequestParam Integer projectId) {
-        Optional<Project> project = projectRepository.findById(projectId);
-        if (project.isPresent()) {
-            projectRepository.delete(project.get());
+    public ResponseEntity<Void> suspendProject(@RequestParam Integer projectId) {
+        Optional<Project> projectOptional = projectRepository.findById(projectId);
+        if (projectOptional.isPresent()) {
+            Project project = projectOptional.get();
+            project.setStatus("Suspended");
+            projectRepository.save(project);
             return ResponseEntity.status(HttpStatus.OK).build();
-        } else
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }

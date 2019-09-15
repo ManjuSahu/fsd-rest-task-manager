@@ -15,13 +15,17 @@ CREATE TABLE task_manager.projects (
     start_date date,
     end_date date,
     priority INT,
+    status VARCHAR(50),
     manager_id INT,
     CONSTRAINT fk_manager_id FOREIGN KEY (manager_id) REFERENCES task_manager.users(user_id)
 );
 
 CREATE TABLE task_manager.parent_tasks (
       parent_id INT AUTO_INCREMENT PRIMARY KEY,
-      parent_task VARCHAR(500) NOT NULL
+      parent_task VARCHAR(500) NOT NULL,
+      status VARCHAR(50),
+      project_id INT,
+      CONSTRAINT fk_project_id FOREIGN KEY (project_id) REFERENCES task_manager.projects(project_id)
 );
 
 CREATE TABLE task_manager.tasks (
@@ -33,6 +37,8 @@ CREATE TABLE task_manager.tasks (
       status VARCHAR(50),
       parent_id INT,
       project_id INT,
+      task_owner_id INT,
       CONSTRAINT fk_parent_id FOREIGN KEY (parent_id) REFERENCES task_manager.parent_tasks(parent_id),
-      CONSTRAINT fk_project_id FOREIGN KEY (project_id) REFERENCES task_manager.projects(project_id)
+      CONSTRAINT fk_task_project_id FOREIGN KEY (project_id) REFERENCES task_manager.projects(project_id),
+      CONSTRAINT fk_task_owner_id FOREIGN KEY (task_owner_id) REFERENCES task_manager.users(user_id)
 );

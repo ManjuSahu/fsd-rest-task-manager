@@ -1,7 +1,9 @@
 package com.fsd.taskmanager.web;
 
 import com.fsd.taskmanager.data.ParentTask;
+import com.fsd.taskmanager.data.Project;
 import com.fsd.taskmanager.repository.ParentTaskRepository;
+import com.fsd.taskmanager.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,9 @@ public class ParentTaskController {
     @Autowired
     private ParentTaskRepository parentTaskRepository;
 
+    @Autowired
+    private ProjectRepository projectRepository;
+
     @GetMapping
     public ResponseEntity<List<ParentTask>> getParentTasks() {
         List<ParentTask> parentTasks = new ArrayList<>();
@@ -31,8 +36,14 @@ public class ParentTaskController {
 
     @PostMapping
     public ResponseEntity<Void> createParentTask(@RequestBody ParentTask parentTask) {
-        parentTaskRepository.save(parentTask);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        Optional<Project> projectOptional = projectRepository.findById(parentTask.getProjectId());
+        if (projectOptional.isPresent()) {
+            parentTask.setProject(projectOptional.get());
+            parentTask.setStatus("Active");
+            parentTaskRepository.save(parentTask);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @PutMapping

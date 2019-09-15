@@ -3,9 +3,11 @@ package com.fsd.taskmanager.web;
 import com.fsd.taskmanager.data.ParentTask;
 import com.fsd.taskmanager.data.Project;
 import com.fsd.taskmanager.data.Task;
+import com.fsd.taskmanager.data.User;
 import com.fsd.taskmanager.repository.ParentTaskRepository;
 import com.fsd.taskmanager.repository.ProjectRepository;
 import com.fsd.taskmanager.repository.TaskRepository;
+import com.fsd.taskmanager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,9 @@ public class TaskController {
 
     @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private ProjectRepository projectRepository;
@@ -45,10 +50,17 @@ public class TaskController {
         Optional<Project> projectOptional = projectRepository.findById(task.getProjectId());
         if (projectOptional.isPresent()) {
             task.setProject(projectOptional.get());
+            task.setStatus("Active");
             if(!StringUtils.isEmpty(task.getParentTaskId())) {
                 Optional<ParentTask> parentTaskOptional = parentTaskRepository.findById(task.getParentTaskId());
                 if (parentTaskOptional.isPresent()) {
                     task.setParentTask(parentTaskOptional.get());
+                }
+            }
+            if(!StringUtils.isEmpty(task.getTaskOwnerId())) {
+                Optional<User> userOptional = userRepository.findById(task.getTaskOwnerId());
+                if (userOptional.isPresent()) {
+                    task.setTaskOwner(userOptional.get());
                 }
             }
             taskRepository.save(task);

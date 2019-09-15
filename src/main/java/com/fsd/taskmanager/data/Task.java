@@ -1,17 +1,20 @@
 package com.fsd.taskmanager.data;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity(name = "tasks")
-@ToString
 @EqualsAndHashCode
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Task {
+public class Task implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "task_id")
@@ -42,9 +45,17 @@ public class Task {
     @JoinColumn(name = "project_id")
     private Project project;
 
+    @ManyToOne
+    @JoinColumn(name = "task_owner_id")
+    private User taskOwner;
+
     @Transient
     private Integer parentTaskId;
 
     @Transient
     private Integer projectId;
+
+    @Transient
+    private Integer taskOwnerId;
+
 }
