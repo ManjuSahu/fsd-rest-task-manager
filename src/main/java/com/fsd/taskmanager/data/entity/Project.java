@@ -1,9 +1,10 @@
-package com.fsd.taskmanager.data;
+package com.fsd.taskmanager.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,14 +37,20 @@ public class Project implements java.io.Serializable {
 
     @OneToMany(mappedBy = "project")
     @JsonIgnore
-    private List<Task> taks;
+    private List<Task> dbTasks;
 
     @OneToMany(mappedBy = "project")
     @JsonIgnore
-    private List<ParentTask> parentTasks;
+    private List<ParentTask> dbParentTasks;
 
     @Transient
     private Integer managerId;
+
+    @Transient
+    private List<com.fsd.taskmanager.data.dto.Task> tasks = new ArrayList<>();
+
+    @Transient
+    private List<com.fsd.taskmanager.data.dto.ParentTask> parentTasks = new ArrayList<>();
 
     @Override
     public String toString() {

@@ -1,6 +1,6 @@
 package com.fsd.taskmanager.repository;
 
-import com.fsd.taskmanager.data.User;
+import com.fsd.taskmanager.data.entity.User;
 import org.springframework.data.repository.CrudRepository;
 
 

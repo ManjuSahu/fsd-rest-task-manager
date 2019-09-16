@@ -1,4 +1,4 @@
-package com.fsd.taskmanager.data;
+package com.fsd.taskmanager.data.entity;
 
 import lombok.*;
 

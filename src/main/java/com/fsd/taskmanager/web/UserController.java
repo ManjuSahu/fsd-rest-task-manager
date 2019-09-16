@@ -1,6 +1,6 @@
 package com.fsd.taskmanager.web;
 
-import com.fsd.taskmanager.data.User;
+import com.fsd.taskmanager.data.entity.User;
 import com.fsd.taskmanager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

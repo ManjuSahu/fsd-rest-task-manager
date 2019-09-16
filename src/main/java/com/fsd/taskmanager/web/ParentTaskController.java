@@ -1,7 +1,7 @@
 package com.fsd.taskmanager.web;
 
-import com.fsd.taskmanager.data.ParentTask;
-import com.fsd.taskmanager.data.Project;
+import com.fsd.taskmanager.data.entity.ParentTask;
+import com.fsd.taskmanager.data.entity.Project;
 import com.fsd.taskmanager.repository.ParentTaskRepository;
 import com.fsd.taskmanager.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +22,9 @@ public class ParentTaskController {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private ProjectController projectController;
 
     @GetMapping
     public ResponseEntity<List<ParentTask>> getParentTasks() {
@@ -49,6 +52,11 @@ public class ParentTaskController {
     @PutMapping
     public ResponseEntity<Void> updateParentTask(@RequestBody ParentTask parentTask) {
         parentTaskRepository.save(parentTask);
+        try {
+            projectController.updateProjectStatus(parentTask.getProject());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

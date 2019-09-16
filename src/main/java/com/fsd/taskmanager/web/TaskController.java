@@ -1,9 +1,9 @@
 package com.fsd.taskmanager.web;
 
-import com.fsd.taskmanager.data.ParentTask;
-import com.fsd.taskmanager.data.Project;
-import com.fsd.taskmanager.data.Task;
-import com.fsd.taskmanager.data.User;
+import com.fsd.taskmanager.data.entity.ParentTask;
+import com.fsd.taskmanager.data.entity.Project;
+import com.fsd.taskmanager.data.entity.Task;
+import com.fsd.taskmanager.data.entity.User;
 import com.fsd.taskmanager.repository.ParentTaskRepository;
 import com.fsd.taskmanager.repository.ProjectRepository;
 import com.fsd.taskmanager.repository.TaskRepository;
@@ -34,6 +34,9 @@ public class TaskController {
     @Autowired
     private ParentTaskRepository parentTaskRepository;
 
+    @Autowired
+    private ProjectController projectController;
+
     @GetMapping
     public ResponseEntity<List<Task>> getTasks() {
         List<Task> tasks = new ArrayList<>();
@@ -56,7 +59,8 @@ public class TaskController {
                 if (parentTaskOptional.isPresent()) {
                     task.setParentTask(parentTaskOptional.get());
                 }
-            }
+            } else
+                task.setParentTask(null);
             if(!StringUtils.isEmpty(task.getTaskOwnerId())) {
                 Optional<User> userOptional = userRepository.findById(task.getTaskOwnerId());
                 if (userOptional.isPresent()) {
@@ -72,6 +76,11 @@ public class TaskController {
     @PutMapping
     public ResponseEntity<Void> updateTask(@RequestBody Task task) {
         taskRepository.save(task);
+        try {
+            projectController.updateProjectStatus(task.getProject());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
