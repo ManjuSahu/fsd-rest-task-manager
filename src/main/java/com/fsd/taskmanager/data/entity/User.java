@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class User implements java.io.Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
