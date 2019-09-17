@@ -51,13 +51,17 @@ public class ParentTaskController {
 
     @PutMapping
     public ResponseEntity<Void> updateParentTask(@RequestBody ParentTask parentTask) {
-        parentTaskRepository.save(parentTask);
-        try {
-            projectController.updateProjectStatus(parentTask.getProject());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.status(HttpStatus.OK).build();
+        Optional<ParentTask> parentTask1 = parentTaskRepository.findById(parentTask.getParentId());
+        if (parentTask1.isPresent()) {
+            parentTaskRepository.save(parentTask);
+            try {
+                projectController.updateProjectStatus(parentTask.getProject());
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @DeleteMapping

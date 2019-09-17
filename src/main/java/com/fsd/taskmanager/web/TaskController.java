@@ -54,7 +54,7 @@ public class TaskController {
         if (projectOptional.isPresent()) {
             task.setProject(projectOptional.get());
             task.setStatus("Active");
-            if(!StringUtils.isEmpty(task.getParentTaskId())) {
+            if (!StringUtils.isEmpty(task.getParentTaskId())) {
                 Optional<ParentTask> parentTaskOptional = parentTaskRepository.findById(task.getParentTaskId());
                 if (parentTaskOptional.isPresent()) {
                     task.setParentTask(parentTaskOptional.get());
@@ -62,7 +62,7 @@ public class TaskController {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             } else
                 task.setParentTask(null);
-            if(!StringUtils.isEmpty(task.getTaskOwnerId())) {
+            if (!StringUtils.isEmpty(task.getTaskOwnerId())) {
                 Optional<User> userOptional = userRepository.findById(task.getTaskOwnerId());
                 if (userOptional.isPresent()) {
                     task.setTaskOwner(userOptional.get());
@@ -77,13 +77,17 @@ public class TaskController {
 
     @PutMapping
     public ResponseEntity<Void> updateTask(@RequestBody Task task) {
-        taskRepository.save(task);
-        try {
-            projectController.updateProjectStatus(task.getProject());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.status(HttpStatus.OK).build();
+        Optional<Task> task1 = taskRepository.findById(task.getTaskId());
+        if (task1.isPresent()) {
+            taskRepository.save(task);
+            try {
+                projectController.updateProjectStatus(task.getProject());
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @DeleteMapping

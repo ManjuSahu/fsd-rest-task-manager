@@ -76,7 +76,7 @@ public class TaskControllerTest {
 
     @Before
     public void init() throws Exception {
-        task = Task.builder().task("Task 1").priority(1).status("Active").projectId(1).build();
+        task = Task.builder().taskId(1).task("Task 1").priority(1).status("Active").projectId(1).build();
         when(taskRepository.findAll()).thenReturn(tasks);
         when(taskRepository.findById(1)).thenReturn(Optional.ofNullable(task));
         when(taskRepository.findById(3)).thenReturn(Optional.empty());
@@ -132,6 +132,11 @@ public class TaskControllerTest {
 
     @Test
     public void updateInvalidTask() throws Exception {
+        assertEquals(HttpStatus.NOT_FOUND, taskController.updateTask(Task.builder().taskId(3).build()).getStatusCode());
+    }
+
+    @Test
+    public void updateTaskWithInvalidProject() throws Exception {
         task.setProject(invalidProject);
         assertEquals(HttpStatus.BAD_REQUEST, taskController.updateTask(task).getStatusCode());
     }

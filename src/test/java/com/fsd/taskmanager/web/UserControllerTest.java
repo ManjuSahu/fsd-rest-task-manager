@@ -32,7 +32,6 @@ public class UserControllerTest {
 
     public UserControllerTest() {
         user = User.builder().userId(1).employeeId(111).firstName("Manju").lastName("Sahu").build();
-        List<User> users = new ArrayList<>();
         User user1 = User.builder().userId(2).employeeId(222).firstName("Sathya").lastName("Mani").build();
         users.add(user);
         users.add(user1);
