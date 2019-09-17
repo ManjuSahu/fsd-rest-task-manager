@@ -98,7 +98,6 @@ public class ProjectControllerTest {
     @Test
     public void updateProject() throws Exception {
         assertEquals(HttpStatus.OK, projectController.updateProject(project).getStatusCode());
-
     }
 
     @Test

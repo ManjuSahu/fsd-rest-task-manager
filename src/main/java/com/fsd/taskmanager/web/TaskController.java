@@ -58,14 +58,16 @@ public class TaskController {
                 Optional<ParentTask> parentTaskOptional = parentTaskRepository.findById(task.getParentTaskId());
                 if (parentTaskOptional.isPresent()) {
                     task.setParentTask(parentTaskOptional.get());
-                }
+                } else
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             } else
                 task.setParentTask(null);
             if(!StringUtils.isEmpty(task.getTaskOwnerId())) {
                 Optional<User> userOptional = userRepository.findById(task.getTaskOwnerId());
                 if (userOptional.isPresent()) {
                     task.setTaskOwner(userOptional.get());
-                }
+                } else
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
             taskRepository.save(task);
             return ResponseEntity.status(HttpStatus.CREATED).build();
