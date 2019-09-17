@@ -1,10 +1,7 @@
 package com.fsd.taskmanager.data.dto;
 
 import com.fsd.taskmanager.data.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
@@ -12,6 +9,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Task {
     private Integer taskId;
 

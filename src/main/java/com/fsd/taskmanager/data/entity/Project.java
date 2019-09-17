@@ -14,6 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Project implements java.io.Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

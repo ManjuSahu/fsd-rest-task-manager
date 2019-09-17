@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 
@@ -15,9 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -29,13 +26,20 @@ public class UserControllerTest {
     @InjectMocks
     private UserController userController = new UserController();
 
-    @Before
-    public void init() {
+    private User user;
+
+    private List<User> users = new ArrayList<>();
+
+    public UserControllerTest() {
+        user = User.builder().userId(1).employeeId(111).firstName("Manju").lastName("Sahu").build();
         List<User> users = new ArrayList<>();
-        User user = User.builder().userId(1).employeeId(111).firstName("Manju").lastName("Sahu").build();
         User user1 = User.builder().userId(2).employeeId(222).firstName("Sathya").lastName("Mani").build();
         users.add(user);
         users.add(user1);
+    }
+
+    @Before
+    public void init() {
         when(userRepository.findAll()).thenReturn(users);
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(userRepository.findById(3)).thenReturn(Optional.empty());
@@ -54,7 +58,12 @@ public class UserControllerTest {
 
     @Test
     public void updateUser() throws Exception {
-        assertEquals(HttpStatus.OK, userController.updateUser(User.builder().build()).getStatusCode());
+        assertEquals(HttpStatus.OK, userController.updateUser(user).getStatusCode());
+    }
+
+    @Test
+    public void updateInvalidUser() throws Exception {
+        assertEquals(HttpStatus.NOT_FOUND, userController.updateUser(User.builder().build()).getStatusCode());
     }
 
     @Test

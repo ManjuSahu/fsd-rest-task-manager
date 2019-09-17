@@ -38,8 +38,12 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<Void> updateUser(@RequestBody User user) {
-        userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        Optional<User> user1 = userRepository.findById(user.getUserId());
+        if(user1.isPresent()) {
+            userRepository.save(user);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @DeleteMapping

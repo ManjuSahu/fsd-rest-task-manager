@@ -38,18 +38,19 @@ public class ProjectController {
     public ResponseEntity<List<Project>> getProjects() {
         List<Project> projects = new ArrayList<>();
         projectRepository.findAll().forEach((item) -> {
-            if (!("Suspended".equals(item.getStatus())))
+            if (!("Suspended".equals(item.getStatus()))) {
                 projects.add(item);
-            item.getDbTasks().forEach(task -> {
-                com.fsd.taskmanager.data.dto.Task copyTask = new com.fsd.taskmanager.data.dto.Task();
-                BeanUtils.copyProperties(task, copyTask);
-                item.getTasks().add(copyTask);
-            });
-            item.getDbParentTasks().forEach(parentTask -> {
-                com.fsd.taskmanager.data.dto.ParentTask copyParentTask = new com.fsd.taskmanager.data.dto.ParentTask();
-                BeanUtils.copyProperties(parentTask, copyParentTask);
-                item.getParentTasks().add(copyParentTask);
-            });
+                item.getDbTasks().forEach(task -> {
+                    com.fsd.taskmanager.data.dto.Task copyTask = new com.fsd.taskmanager.data.dto.Task();
+                    BeanUtils.copyProperties(task, copyTask);
+                    item.getTasks().add(copyTask);
+                });
+                item.getDbParentTasks().forEach(parentTask -> {
+                    com.fsd.taskmanager.data.dto.ParentTask copyParentTask = new com.fsd.taskmanager.data.dto.ParentTask();
+                    BeanUtils.copyProperties(parentTask, copyParentTask);
+                    item.getParentTasks().add(copyParentTask);
+                });
+            }
         });
         System.out.println(projects);
         return ResponseEntity.ok(projects);
@@ -72,8 +73,12 @@ public class ProjectController {
 
     @PutMapping
     public ResponseEntity<Void> updateProject(@RequestBody Project project) {
-        projectRepository.save(project);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        Optional<Project> projectOptional = projectRepository.findById(project.getProjectId());
+        if (projectOptional.isPresent()) {
+            projectRepository.save(project);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @DeleteMapping
