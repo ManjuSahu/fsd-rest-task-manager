@@ -46,19 +46,29 @@ public class ProjectControllerTest {
 
     private List<Project> projects = new ArrayList<>();
 
+    private Task task2;
+
+    private ParentTask parentTask2;
+
     private User user;
 
     public ProjectControllerTest() {
         Task task = Task.builder().task("Task 1").build();
+        task2 = Task.builder().task("Task 1").status("Completed").build();
         ParentTask parentTask = ParentTask.builder().parentTask("Parent Task 1").build();
+        parentTask2 = ParentTask.builder().parentTask("Parent Task 1").status("Completed").build();
         user = User.builder().userId(1).employeeId(111).firstName("Manju").lastName("Sahu").build();
         project = new Project();
         project.setStatus("Active");
         project.setManager(user);
         project.setProject("User Management");
         project.setPriority(1);
-        project.setDbTasks(Collections.singletonList(task));
-        project.setDbParentTasks(Collections.singletonList(parentTask));
+        List<Task> tasks = new ArrayList<>();
+        tasks.add(task);
+        List<ParentTask> parentTasks = new ArrayList<>();
+        parentTasks.add(parentTask);
+        project.setDbTasks(tasks);
+        project.setDbParentTasks(parentTasks);
         project.setProjectId(1);
         Project project1 = Project.builder().projectId(2).project("Leave Management").manager(user).priority(1)
                 .status("Suspended")
@@ -89,6 +99,12 @@ public class ProjectControllerTest {
     }
 
     @Test
+    public void createProjectWithoutManager() throws Exception {
+        Project project = Project.builder().project("New Project").build();
+        assertEquals(HttpStatus.CREATED, projectController.createProject(project).getStatusCode());
+    }
+
+    @Test
     public void createInvalidProject() throws Exception {
         Project project = Project.builder().project("New Project").build();
         project.setManagerId(2);
@@ -97,6 +113,21 @@ public class ProjectControllerTest {
 
     @Test
     public void updateProject() throws Exception {
+        assertEquals(HttpStatus.OK, projectController.updateProject(project).getStatusCode());
+    }
+
+    @Test
+    public void updateProjectWithCompletedTasks() throws Exception {
+        project.setDbTasks(Collections.singletonList(task2));
+        project.setDbParentTasks(Collections.singletonList(parentTask2));
+        assertEquals(HttpStatus.OK, projectController.updateProject(project).getStatusCode());
+    }
+
+
+    @Test
+    public void updateProjectWithMixedStatusTasks() throws Exception {
+        project.getDbParentTasks().add(parentTask2);
+        project.getDbTasks().add(task2);
         assertEquals(HttpStatus.OK, projectController.updateProject(project).getStatusCode());
     }
 
