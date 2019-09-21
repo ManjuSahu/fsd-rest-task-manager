@@ -85,14 +85,4 @@ public class ParentTaskControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, controller.updateParentTask(parentTask).getStatusCode());
     }
 
-    @Test
-    public void deleteParentTask() throws Exception {
-        assertEquals(HttpStatus.OK, controller.deleteParentTask(parentTask.getParentId()).getStatusCode());
-    }
-
-    @Test
-    public void deleteInvalidParentTask() throws Exception {
-        assertEquals(HttpStatus.NOT_FOUND, controller.deleteParentTask(2).getStatusCode());
-    }
-
 }

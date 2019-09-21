@@ -141,14 +141,4 @@ public class TaskControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, taskController.updateTask(task).getStatusCode());
     }
 
-    @Test
-    public void deleteTask() throws Exception {
-        assertEquals(HttpStatus.OK, taskController.deleteTask(1).getStatusCode());
-    }
-
-    @Test
-    public void deleteInvalidTask() throws Exception {
-        assertEquals(HttpStatus.NOT_FOUND, taskController.deleteTask(3).getStatusCode());
-    }
-
 }
