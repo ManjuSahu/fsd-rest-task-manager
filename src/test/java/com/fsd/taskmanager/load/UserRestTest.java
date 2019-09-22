@@ -21,29 +21,9 @@ public class UserRestTest {
     }
 
 
-    ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper();
 
     private String baseUrl = "http://localhost:8082/users";
-
-    @Test
-    public void testUserCRUD() throws IOException {
-        User user = User.builder().firstName("perf").lastName("test").employeeId(1).build();
-        given().contentType(ContentType.JSON).body(user)
-                .post(baseUrl)
-                .then()
-                .statusCode(201);
-        List<User> users = mapper.readValue(get(baseUrl).asString(), new TypeReference<List<User>>() {
-        });
-        User lastUser = users.get(users.size() - 1);
-        given().contentType(ContentType.JSON).body(lastUser)
-                .put(baseUrl)
-                .then()
-                .statusCode(200);
-        given().contentType(ContentType.JSON)
-                .delete(baseUrl + "/" + lastUser.getUserId())
-                .then()
-                .statusCode(200);
-    }
 
     @Test
     public void getUsers() {
